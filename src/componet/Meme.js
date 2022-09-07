@@ -1,69 +1,66 @@
-import React, { useState } from "react";
-import memeData from "./memeData.js";
+import React from "react"
+import memesData from "./memeData.js"
+
 export default function Meme() {
-
-    // // destruct array   
-    const [count, setCounter] = useState(0);
-    // // const [memeImage,setMemeImage] = useState("")
-    // const [memeImage, setMemeImage] = useState("")
-    function add() {
-        // using New value of state
-        // setCounter(count + 1)
-
-        // using callback function store the previous 
-        setCounter(setCount => setCount + 1)
-    }
-    function subtract() {
-        setCounter(count - 1)
-    }
-
-    // function getMemeImage() {
-    //     const memesArray = memeData.data.memes
-    //     const randomNumber = Math.floor(Math.random() * memesArray.length);
-    //     setMemeImage(memesArray[randomNumber].url)
-
-    // }
-    const [memeImage, setMemeImage] = React.useState("")
-    /**
-     * Challenge: Save the random meme URL in state
-     * - Below the div.form, add an <img /> and set the
-     *   src to the new `memeImage` state you created
-     */
-
+    
+    const [meme, setMeme] = React.useState({
+        topText: "",
+        bottomText: "",
+        randomImage: "http://i.imgflip.com/1bij.jpg" 
+    })
+    const [allMemeImages, setAllMemeImages] = React.useState(memesData)
+    
+    // image generator
     function getMemeImage() {
-        const memesArray = memeData.data.memes
+        const memesArray = allMemeImages.data.memes
         const randomNumber = Math.floor(Math.random() * memesArray.length)
-        setMemeImage(memesArray[randomNumber].url)
+        const url = memesArray[randomNumber].url
+        setMeme(prevMeme => ({
+            ...prevMeme,
+            randomImage: url
+        }))
+        
+    }
+    // text accepte and display
+    function handleChange(event){
+        const {name, value} = event.target
+        setMeme(prevMeme => ({
+            ...prevMeme,
+            [name]:value
+        }))
 
     }
+    
     return (
         <main>
             <div className="form">
-                <input
+                <input 
                     type="text"
                     placeholder="Top text"
                     className="form--input"
+                    name="topText"
+                    value={meme.topText}
+                    onChange={handleChange}
                 />
-                <input
+                <input 
                     type="text"
                     placeholder="Bottom text"
                     className="form--input"
+                    name="bottomText"
+                    value={meme.bottomText}
+                    onChange={handleChange}
                 />
-                <button
+                <button 
                     className="form--button"
                     onClick={getMemeImage}
                 >
                     Get a new meme image 🖼
                 </button>
             </div>
-            <img src={memeImage} className="imgStyle" />
-
-            <div className="counter">
-                <button className="counter--minus" onClick={subtract}>–</button>
-                <div className="counter--count">
-                    <h1>{count}</h1>
-                </div>
-                <button className="counter--plus" onClick={add}>+</button>
+            <div className="meme">
+                <img src={meme.randomImage} className="meme--image" />
+                <h2 className="meme--text top">{meme.topText}</h2>
+                <h2 className="meme--text bottom">{meme.bottomText}</h2>
             </div>
         </main>
     )
